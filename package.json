@@ -1,0 +1,11 @@
+{
+  "name": "kuluka-agro",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "source .venv/bin/activate && python manage.py migrate && python manage.py runserver 0.0.0.0:3000",
+    "migrate": "source .venv/bin/activate && python manage.py migrate",
+    "createsuperuser": "source .venv/bin/activate && python manage.py createsuperuser",
+    "collectstatic": "source .venv/bin/activate && python manage.py collectstatic --noinput"
+  }
+}

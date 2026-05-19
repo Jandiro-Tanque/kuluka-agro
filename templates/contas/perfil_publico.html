@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}{{ perfil_usuario.get_full_name|default:perfil_usuario.username }} - KULUKA AGRO{% endblock %}
+
+{% block conteudo %}
+<div class="container py-5">
+    <!-- Header do Perfil -->
+    <div class="perfil-card mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-auto text-center mb-3 mb-md-0">
+                {% if perfil_usuario.foto_perfil %}
+                <img src="{{ perfil_usuario.foto_perfil.url }}" alt="{{ perfil_usuario.username }}" class="perfil-foto">
+                {% else %}
+                <div class="perfil-foto-placeholder">
+                    {{ perfil_usuario.first_name|slice:":1"|upper|default:perfil_usuario.username|slice:":1"|upper }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <h2 class="mb-0">{{ perfil_usuario.get_full_name|default:perfil_usuario.username }}</h2>
+                    {% if perfil_usuario.eh_fornecedor %}
+                    <span class="badge-fornecedor">
+                        <i class="bi bi-shop me-1"></i> Fornecedor
+                    </span>
+                    {% else %}
+                    <span class="badge-produtor">
+                        <i class="bi bi-tree me-1"></i> Produtor
+                    </span>
+                    {% endif %}
+                </div>
+                {% if perfil_usuario.nome_empresa %}
+                <p class="text-muted mb-2">
+                    <i class="bi bi-building me-1"></i> {{ perfil_usuario.nome_empresa }}
+                </p>
+                {% endif %}
+                {% if perfil_usuario.cidade or perfil_usuario.provincia %}
+                <p class="text-muted mb-0">
+                    <i class="bi bi-geo-alt me-1"></i> 
+                    {{ perfil_usuario.cidade }}{% if perfil_usuario.cidade and perfil_usuario.provincia %}, {% endif %}{{ perfil_usuario.provincia }}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    {% if perfil_usuario.descricao %}
+    <div class="glass-card mb-4">
+        <h5><i class="bi bi-info-circle me-2"></i> Sobre</h5>
+        <p class="mb-0">{{ perfil_usuario.descricao }}</p>
+    </div>
+    {% endif %}
+    
+    <!-- Produtos do Fornecedor -->
+    {% if perfil_usuario.eh_fornecedor and produtos %}
+    <h4 class="fw-bold mb-3">Produtos</h4>
+    <div class="row g-4">
+        {% for produto in produtos %}
+        <div class="col-md-6 col-lg-4">
+            <div class="produto-card">
+                {% if produto.imagem %}
+                <img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}">
+                {% else %}
+                <div class="card-img-top img-placeholder" style="height: 200px;">
+                    <i class="bi bi-image"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="produto-nome">{{ produto.nome }}</h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="produto-preco">{{ produto.preco_formatado }}</span>
+                        <a href="{% url 'produtos:detalhe' produto.pk %}" class="btn btn-sm btn-kuluka">
+                            Ver Mais
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

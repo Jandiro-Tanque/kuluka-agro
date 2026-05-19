@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Editar Perfil - KULUKA AGRO{% endblock %}
+
+{% block conteudo %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="d-flex align-items-center mb-4">
+                <a href="{% url 'contas:perfil' %}" class="btn btn-kuluka-outline me-3">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+                <h2 class="mb-0">Editar Perfil</h2>
+            </div>
+            
+            <div class="form-glass">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Foto de Perfil -->
+                    <div class="text-center mb-4">
+                        {% if user.foto_perfil %}
+                        <img src="{{ user.foto_perfil.url }}" alt="{{ user.username }}" class="perfil-foto mb-3">
+                        {% else %}
+                        <div class="perfil-foto-placeholder mb-3 mx-auto">
+                            {{ user.first_name|slice:":1"|upper|default:user.username|slice:":1"|upper }}
+                        </div>
+                        {% endif %}
+                        <div>
+                            <label for="foto_perfil" class="btn btn-sm btn-kuluka-outline">
+                                <i class="bi bi-camera me-1"></i> Alterar Foto
+                            </label>
+                            <input type="file" name="foto_perfil" id="foto_perfil" class="d-none" accept="image/*">
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Dados Pessoais -->
+                    <h5 class="mb-3"><i class="bi bi-person me-2"></i> Dados Pessoais</h5>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="first_name" class="form-label">Primeiro Nome</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="last_name" class="form-label">Sobrenome</label>
+                            {{ form.last_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">E-mail</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="telefone" class="form-label">Telefone</label>
+                            {{ form.telefone }}
+                        </div>
+                    </div>
+                    
+                    <!-- Endereço -->
+                    <h5 class="mb-3"><i class="bi bi-geo-alt me-2"></i> Endereço</h5>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label for="endereco" class="form-label">Endereço Completo</label>
+                            {{ form.endereco }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cidade" class="form-label">Cidade</label>
+                            {{ form.cidade }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="provincia" class="form-label">Província</label>
+                            {{ form.provincia }}
+                        </div>
+                    </div>
+                    
+                    <!-- Campos específicos por tipo -->
+                    {% if user.eh_fornecedor %}
+                    <h5 class="mb-3"><i class="bi bi-shop me-2"></i> Dados da Empresa</h5>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="nome_empresa" class="form-label">Nome da Empresa</label>
+                            {{ form.nome_empresa }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="nif" class="form-label">NIF</label>
+                            {{ form.nif }}
+                        </div>
+                    </div>
+                    {% else %}
+                    <h5 class="mb-3"><i class="bi bi-tree me-2"></i> Dados da Produção</h5>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="area_cultivo" class="form-label">Área de Cultivo (hectares)</label>
+                            {{ form.area_cultivo }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="tipos_cultivo" class="form-label">Tipos de Cultivo</label>
+                            {{ form.tipos_cultivo }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Descrição -->
+                    <h5 class="mb-3"><i class="bi bi-info-circle me-2"></i> Sobre Você</h5>
+                    
+                    <div class="mb-4">
+                        <label for="descricao" class="form-label">Descrição</label>
+                        {{ form.descricao }}
+                        <small class="text-muted">Conte um pouco sobre você ou sua empresa.</small>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-kuluka">
+                            <i class="bi bi-check-lg me-1"></i> Salvar Alterações
+                        </button>
+                        <a href="{% url 'contas:perfil' %}" class="btn btn-kuluka-outline">
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

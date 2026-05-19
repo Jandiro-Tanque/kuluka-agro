@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Pedido #{{ pedido.pk }} - KULUKA AGRO{% endblock %}
+
+{% block conteudo %}
+<div class="container py-5">
+    <div class="d-flex align-items-center mb-4">
+        <a href="{% url 'pedidos:meus_pedidos' %}" class="btn btn-kuluka-outline me-3">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div>
+            <h2 class="mb-0">Pedido #{{ pedido.pk }}</h2>
+            <small class="text-muted">{{ pedido.data_criacao|date:"d/m/Y H:i" }}</small>
+        </div>
+        <span class="badge status-{{ pedido.status|lower }} ms-3 py-2 px-3">
+            {{ pedido.get_status_display }}
+        </span>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <!-- Itens do Pedido -->
+            <div class="glass-card mb-4">
+                <h5 class="mb-3"><i class="bi bi-box-seam me-2"></i> Itens do Pedido</h5>
+                
+                <div class="table-responsive">
+                    <table class="table table-glass mb-0">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;"></th>
+                                <th>Produto</th>
+                                <th>Fornecedor</th>
+                                <th>Preço Unit.</th>
+                                <th>Qtd</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in pedido.itens.all %}
+                            <tr>
+                                <td>
+                                    {% if item.produto.imagem %}
+                                    <img src="{{ item.produto.imagem.url }}" alt="{{ item.produto.nome }}" 
+                                         class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                    {% else %}
+                                    <div class="rounded img-placeholder d-flex align-items-center justify-content-center" 
+                                         style="width: 50px; height: 50px;">
+                                        <i class="bi bi-image"></i>
+                                    </div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <strong>{{ item.produto.nome }}</strong>
+                                </td>
+                                <td>
+                                    <small class="text-muted">
+                                        {{ item.produto.fornecedor.nome_empresa|default:item.produto.fornecedor.username }}
+                                    </small>
+                                </td>
+                                <td>Kz {{ item.preco_unitario|floatformat:2 }}</td>
+                                <td>{{ item.quantidade }}</td>
+                                <td><strong>{{ item.subtotal_formatado }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="5" class="text-end"><strong>Total:</strong></td>
+                                <td><strong class="text-success" style="font-size: 1.25rem;">{{ pedido.total_formatado }}</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Endereço de Entrega -->
+            <div class="glass-card mb-4">
+                <h5 class="mb-3"><i class="bi bi-geo-alt me-2"></i> Endereço de Entrega</h5>
+                <p class="mb-0">{{ pedido.endereco_entrega }}</p>
+            </div>
+            
+            {% if pedido.observacoes %}
+            <!-- Observações -->
+            <div class="glass-card mb-4">
+                <h5 class="mb-3"><i class="bi bi-chat-text me-2"></i> Observações</h5>
+                <p class="mb-0">{{ pedido.observacoes }}</p>
+            </div>
+            {% endif %}
+            
+            <!-- Status do Pedido -->
+            <div class="glass-card">
+                <h5 class="mb-3"><i class="bi bi-clock-history me-2"></i> Histórico</h5>
+                <ul class="list-unstyled mb-0">
+                    <li class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <span>Pedido realizado</span>
+                        <small class="text-muted ms-auto">{{ pedido.data_criacao|date:"d/m/Y H:i" }}</small>
+                    </li>
+                    {% if pedido.status != 'PENDENTE' %}
+                    <li class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <span>{{ pedido.get_status_display }}</span>
+                        <small class="text-muted ms-auto">{{ pedido.data_atualizacao|date:"d/m/Y H:i" }}</small>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

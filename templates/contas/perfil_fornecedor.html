@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Meu Perfil - Fornecedor | KULUKA AGRO{% endblock %}
+
+{% block conteudo %}
+<div class="container py-5">
+    <!-- Header do Perfil -->
+    <div class="perfil-card mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-auto text-center mb-3 mb-md-0">
+                {% if user.foto_perfil %}
+                <img src="{{ user.foto_perfil.url }}" alt="{{ user.username }}" class="perfil-foto">
+                {% else %}
+                <div class="perfil-foto-placeholder">
+                    {{ user.first_name|slice:":1"|upper|default:user.username|slice:":1"|upper }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <h2 class="mb-0">{{ user.get_full_name|default:user.username }}</h2>
+                    <span class="badge-fornecedor">
+                        <i class="bi bi-shop me-1"></i> Fornecedor
+                    </span>
+                </div>
+                {% if user.nome_empresa %}
+                <p class="text-muted mb-2">
+                    <i class="bi bi-building me-1"></i> {{ user.nome_empresa }}
+                </p>
+                {% endif %}
+                <p class="text-muted mb-2">
+                    <i class="bi bi-envelope me-1"></i> {{ user.email }}
+                    {% if user.telefone %}
+                    <span class="ms-3"><i class="bi bi-phone me-1"></i> {{ user.telefone }}</span>
+                    {% endif %}
+                </p>
+                {% if user.cidade or user.provincia %}
+                <p class="text-muted mb-0">
+                    <i class="bi bi-geo-alt me-1"></i> 
+                    {{ user.cidade }}{% if user.cidade and user.provincia %}, {% endif %}{{ user.provincia }}
+                </p>
+                {% endif %}
+            </div>
+            <div class="col-md-auto">
+                <a href="{% url 'contas:editar_perfil' %}" class="btn btn-kuluka-outline">
+                    <i class="bi bi-pencil me-1"></i> Editar Perfil
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Estatísticas -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-numero">{{ total_produtos }}</div>
+                <div class="stat-label">Produtos Cadastrados</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-numero">{{ pedidos_recebidos.count }}</div>
+                <div class="stat-label">Pedidos Recebidos</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <a href="{% url 'produtos:criar' %}" class="btn btn-kuluka btn-lg w-100">
+                    <i class="bi bi-plus-circle me-2"></i> Novo Produto
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <!-- Meus Produtos -->
+        <div class="col-lg-6">
+            <div class="glass-card h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="bi bi-box-seam me-2"></i> Meus Produtos</h5>
+                    <a href="{% url 'produtos:meus_produtos' %}" class="btn btn-sm btn-kuluka-outline">
+                        Ver Todos
+                    </a>
+                </div>
+                
+                {% if meus_produtos %}
+                <div class="list-group list-group-flush">
+                    {% for produto in meus_produtos %}
+                    <div class="list-group-item bg-transparent d-flex align-items-center">
+                        {% if produto.imagem %}
+                        <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" 
+                             class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                        {% else %}
+                        <div class="rounded me-3 img-placeholder" style="width: 50px; height: 50px;">
+                            <i class="bi bi-image" style="font-size: 1.5rem;"></i>
+                        </div>
+                        {% endif %}
+                        <div class="flex-grow-1">
+                            <h6 class="mb-0">{{ produto.nome }}</h6>
+                            <small class="text-muted">{{ produto.preco_formatado }}</small>
+                        </div>
+                        <span class="badge {% if produto.ativo %}bg-success{% else %}bg-secondary{% endif %}">
+                            {% if produto.ativo %}Ativo{% else %}Inativo{% endif %}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-box-seam text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-2">Você ainda não tem produtos cadastrados.</p>
+                    <a href="{% url 'produtos:criar' %}" class="btn btn-kuluka">
+                        <i class="bi bi-plus me-1"></i> Adicionar Produto
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Pedidos Recebidos -->
+        <div class="col-lg-6">
+            <div class="glass-card h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="bi bi-inbox me-2"></i> Pedidos Recentes</h5>
+                    <a href="{% url 'pedidos:pedidos_recebidos' %}" class="btn btn-sm btn-kuluka-outline">
+                        Ver Todos
+                    </a>
+                </div>
+                
+                {% if pedidos_recebidos %}
+                <div class="list-group list-group-flush">
+                    {% for pedido in pedidos_recebidos %}
+                    <div class="list-group-item bg-transparent">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">Pedido #{{ pedido.pk }}</h6>
+                                <small class="text-muted">{{ pedido.cliente.username }}</small>
+                            </div>
+                            <span class="badge status-{{ pedido.status|lower }}">
+                                {{ pedido.get_status_display }}
+                            </span>
+                        </div>
+                        <small class="text-muted">{{ pedido.data_criacao|date:"d/m/Y H:i" }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-2">Você ainda não recebeu nenhum pedido.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    {% if user.descricao %}
+    <div class="glass-card mt-4">
+        <h5><i class="bi bi-info-circle me-2"></i> Sobre</h5>
+        <p class="mb-0">{{ user.descricao }}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

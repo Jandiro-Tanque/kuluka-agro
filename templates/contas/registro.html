@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Criar Conta - KULUKA AGRO{% endblock %}
+
+{% block conteudo %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="text-center mb-4">
+                <img src="{% static 'images/logo.png' %}" alt="KULUKA AGRO" height="80">
+                <h2 class="mt-3 fw-bold">Criar Conta</h2>
+                <p class="text-muted">Junte-se à comunidade KULUKA AGRO</p>
+            </div>
+            
+            <div class="form-glass">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Tipo de Usuário -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-person-badge me-1"></i> Tipo de Conta
+                        </label>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="tipo-usuario-opcao" onclick="selecionarTipo('PRODUTOR')">
+                                    <div class="icone text-success">
+                                        <i class="bi bi-tree"></i>
+                                    </div>
+                                    <h5>Produtor</h5>
+                                    <small class="text-muted">Compre insumos agrícolas</small>
+                                    <input type="radio" name="tipo" value="PRODUTOR" id="tipo_produtor" class="d-none" {% if not request.GET.tipo or request.GET.tipo == 'PRODUTOR' %}checked{% endif %}>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="tipo-usuario-opcao" onclick="selecionarTipo('FORNECEDOR')">
+                                    <div class="icone" style="color: #CDA630;">
+                                        <i class="bi bi-shop"></i>
+                                    </div>
+                                    <h5>Fornecedor</h5>
+                                    <small class="text-muted">Venda seus produtos</small>
+                                    <input type="radio" name="tipo" value="FORNECEDOR" id="tipo_fornecedor" class="d-none" {% if request.GET.tipo == 'FORNECEDOR' %}checked{% endif %}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Dados Pessoais -->
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="first_name" class="form-label">Primeiro Nome</label>
+                            <input type="text" 
+                                   name="first_name" 
+                                   id="first_name" 
+                                   class="form-control"
+                                   value="{{ form.first_name.value|default:'' }}"
+                                   placeholder="João">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="last_name" class="form-label">Sobrenome</label>
+                            <input type="text" 
+                                   name="last_name" 
+                                   id="last_name" 
+                                   class="form-control"
+                                   value="{{ form.last_name.value|default:'' }}"
+                                   placeholder="Silva">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3 mt-3">
+                        <label for="username" class="form-label">Nome de Usuário *</label>
+                        <input type="text" 
+                               name="username" 
+                               id="username" 
+                               class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                               value="{{ form.username.value|default:'' }}"
+                               placeholder="joaosilva"
+                               required>
+                        {% if form.username.errors %}
+                        <div class="invalid-feedback">{{ form.username.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail *</label>
+                        <input type="email" 
+                               name="email" 
+                               id="email" 
+                               class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                               value="{{ form.email.value|default:'' }}"
+                               placeholder="joao@email.com"
+                               required>
+                        {% if form.email.errors %}
+                        <div class="invalid-feedback">{{ form.email.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="telefone" class="form-label">Telefone</label>
+                        <input type="tel" 
+                               name="telefone" 
+                               id="telefone" 
+                               class="form-control"
+                               value="{{ form.telefone.value|default:'' }}"
+                               placeholder="+244 923 456 789">
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="password1" class="form-label">Senha *</label>
+                            <input type="password" 
+                                   name="password1" 
+                                   id="password1" 
+                                   class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
+                                   placeholder="Sua senha"
+                                   required>
+                            {% if form.password1.errors %}
+                            <div class="invalid-feedback">{{ form.password1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="password2" class="form-label">Confirmar Senha *</label>
+                            <input type="password" 
+                                   name="password2" 
+                                   id="password2" 
+                                   class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
+                                   placeholder="Confirme a senha"
+                                   required>
+                            {% if form.password2.errors %}
+                            <div class="invalid-feedback">{{ form.password2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger mt-3">
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <button type="submit" class="btn btn-kuluka w-100 mt-4 mb-3">
+                        <i class="bi bi-person-plus me-2"></i> Criar Conta
+                    </button>
+                    
+                    <div class="text-center">
+                        <p class="mb-0">
+                            Já tem uma conta? 
+                            <a href="{% url 'contas:login' %}" class="text-success fw-bold">
+                                Entrar
+                            </a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js_extra %}
+<script>
+function selecionarTipo(tipo) {
+    // Remove seleção anterior
+    document.querySelectorAll('.tipo-usuario-opcao').forEach(el => {
+        el.classList.remove('selected');
+    });
+    
+    // Marca o selecionado
+    if (tipo === 'PRODUTOR') {
+        document.getElementById('tipo_produtor').checked = true;
+        document.getElementById('tipo_produtor').closest('.tipo-usuario-opcao').classList.add('selected');
+    } else {
+        document.getElementById('tipo_fornecedor').checked = true;
+        document.getElementById('tipo_fornecedor').closest('.tipo-usuario-opcao').classList.add('selected');
+    }
+}
+
+// Inicializa seleção
+document.addEventListener('DOMContentLoaded', function() {
+    const tipoProdutor = document.getElementById('tipo_produtor');
+    const tipoFornecedor = document.getElementById('tipo_fornecedor');
+    
+    if (tipoProdutor.checked) {
+        tipoProdutor.closest('.tipo-usuario-opcao').classList.add('selected');
+    }
+    if (tipoFornecedor.checked) {
+        tipoFornecedor.closest('.tipo-usuario-opcao').classList.add('selected');
+    }
+});
+</script>
+{% endblock %}

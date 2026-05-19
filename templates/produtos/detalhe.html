@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}{{ produto.nome }} - KULUKA AGRO{% endblock %}
+
+{% block conteudo %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'contas:home' %}">Início</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'produtos:catalogo' %}">Catálogo</a></li>
+            <li class="breadcrumb-item active">{{ produto.nome }}</li>
+        </ol>
+    </nav>
+    
+    <div class="glass-card">
+        <div class="row g-4">
+            <!-- Imagem do Produto -->
+            <div class="col-lg-5">
+                {% if produto.imagem %}
+                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" 
+                     class="img-fluid rounded" style="width: 100%; max-height: 400px; object-fit: cover;">
+                {% else %}
+                <div class="img-placeholder rounded" style="height: 400px;">
+                    <i class="bi bi-image" style="font-size: 5rem;"></i>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Informações do Produto -->
+            <div class="col-lg-7">
+                {% if produto.categoria %}
+                <span class="badge bg-light text-dark mb-2">
+                    <i class="bi bi-tag me-1"></i> {{ produto.categoria.nome }}
+                </span>
+                {% endif %}
+                
+                <h1 class="fw-bold mb-3">{{ produto.nome }}</h1>
+                
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <span class="produto-preco" style="font-size: 2rem;">{{ produto.preco_formatado }}</span>
+                    <span class="text-muted">/ {{ produto.get_unidade_medida_display }}</span>
+                </div>
+                
+                <p class="mb-4">{{ produto.descricao }}</p>
+                
+                <!-- Estoque -->
+                <div class="mb-4">
+                    {% if produto.disponivel %}
+                    <span class="badge bg-success">
+                        <i class="bi bi-check-circle me-1"></i> Em estoque: {{ produto.estoque }} {{ produto.get_unidade_medida_display }}
+                    </span>
+                    {% else %}
+                    <span class="badge bg-danger">
+                        <i class="bi bi-x-circle me-1"></i> Fora de estoque
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <!-- Adicionar ao Carrinho -->
+                {% if produto.disponivel %}
+                <form method="post" action="{% url 'pedidos:adicionar' produto.pk %}" class="mb-4">
+                    {% csrf_token %}
+                    <div class="row g-2 align-items-end">
+                        <div class="col-auto">
+                            <label class="form-label">Quantidade</label>
+                            <input type="number" 
+                                   name="quantidade" 
+                                   class="form-control" 
+                                   value="1" 
+                                   min="1" 
+                                   max="{{ produto.estoque }}"
+                                   style="width: 100px;">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-kuluka btn-lg">
+                                <i class="bi bi-cart-plus me-2"></i> Adicionar ao Carrinho
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
+                
+                <hr>
+                
+                <!-- Informações do Fornecedor -->
+                <div class="d-flex align-items-center gap-3">
+                    {% if produto.fornecedor.foto_perfil %}
+                    <img src="{{ produto.fornecedor.foto_perfil.url }}" alt="{{ produto.fornecedor.username }}" 
+                         class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                    {% else %}
+                    <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center" 
+                         style="width: 50px; height: 50px;">
+                        {{ produto.fornecedor.first_name|slice:":1"|upper|default:produto.fornecedor.username|slice:":1"|upper }}
+                    </div>
+                    {% endif %}
+                    <div>
+                        <strong>{{ produto.fornecedor.nome_empresa|default:produto.fornecedor.get_full_name|default:produto.fornecedor.username }}</strong>
+                        <br>
+                        <small class="text-muted">
+                            <i class="bi bi-shop me-1"></i> Fornecedor
+                        </small>
+                    </div>
+                    <a href="{% url 'contas:perfil_publico' produto.fornecedor.pk %}" class="btn btn-sm btn-kuluka-outline ms-auto">
+                        Ver Perfil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Produtos Relacionados -->
+    {% if produtos_relacionados %}
+    <div class="mt-5">
+        <h4 class="fw-bold mb-4">Produtos Relacionados</h4>
+        <div class="row g-4">
+            {% for prod in produtos_relacionados %}
+            <div class="col-md-6 col-lg-3">
+                <div class="produto-card">
+                    {% if prod.imagem %}
+                    <img src="{{ prod.imagem.url }}" class="card-img-top" alt="{{ prod.nome }}">
+                    {% else %}
+                    <div class="card-img-top img-placeholder" style="height: 150px;">
+                        <i class="bi bi-image"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h6 class="produto-nome">{{ prod.nome }}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="produto-preco">{{ prod.preco_formatado }}</span>
+                            <a href="{% url 'produtos:detalhe' prod.pk %}" class="btn btn-sm btn-kuluka-outline">
+                                Ver
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
