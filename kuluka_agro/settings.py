@@ -66,7 +66,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'kuluka_agro',
         'USER': 'postgres',
-        'PASSWORD': 'qwer1234qazwsx',
+        'PASSWORD': '123456',
         'HOST': 'localhost',
         'PORT': '5432',
 
