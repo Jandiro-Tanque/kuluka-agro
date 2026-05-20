@@ -15,7 +15,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # Modo de depuração
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://54-224-48-133.nip.io/registro/']
+ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     "https://54-224-48-133.nip.io",
