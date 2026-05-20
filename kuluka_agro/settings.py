@@ -3,8 +3,9 @@ Configurações Django para o projeto KULUKA AGRO.
 """
 
 from pathlib import Path
-import os
 from dotenv import load_dotenv
+import os
+
 
 load_dotenv()
 # Diretório base do projeto
@@ -15,9 +16,12 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # Modo de depuração
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
+    "http://54.224.48.133",
+    "https://54.224.48.133",
+    "http://54-224-48-133.nip.io",
     "https://54-224-48-133.nip.io",
 ]
 
