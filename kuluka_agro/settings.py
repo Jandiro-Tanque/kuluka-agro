@@ -18,12 +18,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://54.224.48.133",
-    "https://54.224.48.133",
-    "http://54-224-48-133.nip.io",
-    "https://54-224-48-133.nip.io",
-]
 
 # Aplicativos instalados
 INSTALLED_APPS = [
