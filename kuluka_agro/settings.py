@@ -4,13 +4,14 @@ Configurações Django para o projeto KULUKA AGRO.
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # Diretório base do projeto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Chave secreta (manter em segredo em produção)
-SECRET_KEY = '#0js&s!fdzxwo!1y%eo9ib+!*%ew%o@#!q(o$=j7$v6t#9gpg+'
-
+SECRET_KEY = os.getenv("SECRET_KEY")
 # Modo de depuração
 DEBUG = True
 
@@ -68,12 +69,11 @@ WSGI_APPLICATION = 'kuluka_agro.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'kuluka_agro',
-        'USER': 'kuluka_user',
-        'PASSWORD': 'qwer1234qazwsx',
-        'HOST': 'localhost',
-        'PORT': '5432',
-
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("DB_PORT"),
     }
 }
 
