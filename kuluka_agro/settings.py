@@ -9,12 +9,16 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Chave secreta (manter em segredo em produção)
-SECRET_KEY = 'django-insecure-hy9wxds8=4df6egwtzi02h4n_h5e1(l2g^*g8964mjn2flx$fn'
+SECRET_KEY = '#0js&s!fdzxwo!1y%eo9ib+!*%ew%o@#!q(o$=j7$v6t#9gpg+'
 
 # Modo de depuração
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['https://54-224-48-133.nip.io/registro/']
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://54-224-48-133.nip.io",
+]
 
 # Aplicativos instalados
 INSTALLED_APPS = [
