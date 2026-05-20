@@ -16,6 +16,10 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # Modo de depuração
 DEBUG = True
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://54.224.48.133",
+    "https://54.224.48.133",
+]
 ALLOWED_HOSTS = ["*"]
 
 
