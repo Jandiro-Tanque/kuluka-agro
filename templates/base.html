@@ -62,6 +62,20 @@
                     </li>
                     
                     {% if user.is_authenticated %}
+                    <!-- Notificações (apenas para produtores) -->
+                    {% if user.eh_produtor %}
+                    <li class="nav-item">
+                        <a class="nav-link carrinho-badge" href="{% url 'pedidos:notificacoes' %}" title="Notificações">
+                            <i class="bi bi-bell"></i>
+                            {% if notificacoes_count > 0 %}
+                            <span class="badge" style="background: #f9a825; color: #300600;">{{ notificacoes_count }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endif %}
+                    
+                    {% if user.is_authenticated %}
                     <!-- Menu do usuário logado -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">

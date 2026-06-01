@@ -507,3 +507,56 @@ body {
 .img-placeholder i {
     font-size: 3rem;
 }
+
+/* ==========================================
+   KULUKA AGRO - Notificações & Avaliações
+   ========================================== */
+
+/* Badge de notificações na navbar */
+.carrinho-badge {
+    position: relative;
+}
+.carrinho-badge .badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 0.6rem;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+/* Notificação pulsante (sino) quando há novas notificações */
+@keyframes bell-ring {
+    0%, 100% { transform: rotate(0deg); }
+    10% { transform: rotate(14deg); }
+    20% { transform: rotate(-12deg); }
+    30% { transform: rotate(10deg); }
+    40% { transform: rotate(-8deg); }
+    50% { transform: rotate(6deg); }
+    60% { transform: rotate(-4deg); }
+    70% { transform: rotate(2deg); }
+}
+.bell-has-notif {
+    animation: bell-ring 3s ease-in-out infinite;
+    transform-origin: top center;
+    display: inline-block;
+}
+
+/* Star rating interactiva */
+.star-rating .star-btn {
+    user-select: none;
+    display: inline-block;
+}
+
+/* Status badges */
+.status-pendente { background: rgba(158,158,158,0.2); color: #555; border: 1px solid #9e9e9e; }
+.status-confirmado { background: rgba(33,150,243,0.15); color: #1565c0; border: 1px solid #1976d2; }
+.status-em_preparacao { background: rgba(255,152,0,0.15); color: #e65100; border: 1px solid #ff9800; }
+.status-enviado { background: rgba(103,58,183,0.15); color: #4527a0; border: 1px solid #673ab7; }
+.status-entregue { background: rgba(46,125,50,0.15); color: #1b5e20; border: 1px solid #2e7d32; }
+.status-cancelado { background: rgba(198,40,40,0.15); color: #b71c1c; border: 1px solid #c62828; }

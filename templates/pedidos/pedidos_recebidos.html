@@ -12,8 +12,8 @@
     {% if pedidos %}
     <div class="glass-card">
         {% for pedido in pedidos %}
-        <div class="{% if not forloop.last %}mb-4 pb-4 border-bottom{% endif %}">
-            <div class="d-flex justify-content-between align-items-start mb-3">
+        <div class="{% if not forloop.last %}mb-4 pb-4{% else %}mb-0{% endif %}" style="{% if not forloop.last %}border-bottom: 1px solid rgba(48,6,0,0.08);{% endif %}">
+            <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
                 <div>
                     <h5 class="mb-1">Pedido #{{ pedido.pk }}</h5>
                     <p class="text-muted mb-0">
@@ -22,9 +22,22 @@
                         <i class="bi bi-calendar me-1"></i> {{ pedido.data_criacao|date:"d/m/Y H:i" }}
                     </p>
                 </div>
-                <span class="badge status-{{ pedido.status|lower }} py-2 px-3">
-                    {{ pedido.get_status_display }}
-                </span>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="badge status-{{ pedido.status|lower }} py-2 px-3">
+                        {{ pedido.get_status_display }}
+                    </span>
+                    {% if pedido.status == 'ENTREGUE' %}
+                        {% if pedido.entrega_confirmada %}
+                        <span class="badge bg-success py-2 px-3">
+                            <i class="bi bi-check-circle me-1"></i>Confirmado
+                        </span>
+                        {% else %}
+                        <span class="badge py-2 px-3" style="background: rgba(249,168,37,0.2); color: #b8860b; border: 1px solid #f9a825;">
+                            <i class="bi bi-hourglass-split me-1"></i>A aguardar confirmação
+                        </span>
+                        {% endif %}
+                    {% endif %}
+                </div>
             </div>
             
             <!-- Itens do meu fornecimento -->
@@ -36,7 +49,7 @@
                     <img src="{{ item.produto.imagem.url }}" alt="{{ item.produto.nome }}" 
                          class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
                     {% endif %}
-                    <span>{{ item.quantidade }}x {{ item.produto.nome }}</span>
+                    <span>{{ item.quantidade }}x <strong>{{ item.produto.nome }}</strong></span>
                     <span class="text-muted ms-auto">{{ item.subtotal_formatado }}</span>
                 </div>
                 {% endif %}
@@ -48,8 +61,9 @@
                 <i class="bi bi-geo-alt me-1"></i> {{ pedido.endereco_entrega|truncatewords:10 }}
             </p>
             
-            <!-- Ações -->
-            <div class="d-flex gap-2 flex-wrap">
+            <!-- Ações de actualização -->
+            {% if pedido.status != 'ENTREGUE' or not pedido.entrega_confirmada %}
+            <div class="d-flex gap-2 flex-wrap align-items-center">
                 <form method="post" action="{% url 'pedidos:atualizar_status' pedido.pk %}" class="d-flex gap-2">
                     {% csrf_token %}
                     <select name="status" class="form-select form-select-sm" style="width: auto;">
@@ -60,10 +74,19 @@
                         {% endfor %}
                     </select>
                     <button type="submit" class="btn btn-sm btn-kuluka">
-                        <i class="bi bi-check-lg me-1"></i> Atualizar
+                        <i class="bi bi-check-lg me-1"></i>Actualizar
                     </button>
                 </form>
+                <small class="text-muted">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Ao marcar como <strong>Entregue</strong>, o produtor receberá uma notificação para confirmar.
+                </small>
             </div>
+            {% else %}
+            <p class="text-success small mb-0">
+                <i class="bi bi-check-circle-fill me-1"></i>O produtor confirmou a entrega deste pedido.
+            </p>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
@@ -79,11 +102,9 @@
                 </a>
             </li>
             {% endif %}
-            
-            <li class="page-item disabled">
+            <li class="page-item active">
                 <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
             </li>
-            
             {% if page_obj.has_next %}
             <li class="page-item">
                 <a class="page-link" href="?page={{ page_obj.next_page_number }}">
@@ -97,9 +118,9 @@
     
     {% else %}
     <div class="glass-card text-center py-5">
-        <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
-        <h4 class="mt-3">Nenhum pedido recebido</h4>
-        <p class="text-muted">Você ainda não recebeu nenhum pedido de seus produtos.</p>
+        <div style="font-size: 4rem; opacity: 0.4;">📭</div>
+        <h5 class="mt-3 text-muted">Nenhum pedido recebido ainda</h5>
+        <p class="text-muted">Os pedidos dos produtores vão aparecer aqui.</p>
     </div>
     {% endif %}
 </div>
